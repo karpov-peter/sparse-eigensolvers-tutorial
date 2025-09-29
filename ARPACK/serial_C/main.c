@@ -21,14 +21,14 @@ int main() {
   
   const int N      = 1000;
   const int nev    = 9;
-  const int ncv    = 2 * nev + 1;
+  const int ncv    = 2 * nev + 1; // Arnoldi subspace size. ncv should be greater than nev. The recommended choice is ncv ~ 2*nev
   const int ldv    = N;
   const int ldz    = N;
   const int lworkl = ncv * (ncv + 8);
   const int rvec   = 1;      // need eigenvectors
 
-  const double tol = 0.000001; // small tol => more stable checks after EV computation.
-  const double sigma = 0;      // not referenced in this mode
+  const double tol = 1e-6; // small tol => more stable checks after EV computation.
+  const double sigma = 0;  // not referenced in this mode
   
   double resid[N];
   double V[ldv * ncv];

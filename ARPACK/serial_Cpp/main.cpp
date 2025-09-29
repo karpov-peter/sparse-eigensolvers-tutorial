@@ -45,8 +45,8 @@ int main() {
   const int lworkl = ncv * (ncv + 8);
   const int rvec   = 1;      // need eigenvectors
 
-  const double tol   = 0.000001; // small tol => more stable checks after EV computation.
-  const double sigma = 0.0;      // not referenced in this mode
+  const double tol   = 1e-6; // small tol => more stable checks after EV computation.
+  const double sigma = 0.0;  // not referenced in this mode
 
   std::vector<double> resid(N);
   std::vector<double> V(ldv * ncv);
