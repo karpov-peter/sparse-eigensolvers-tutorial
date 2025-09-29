@@ -50,6 +50,7 @@ int main() {
 
   int info = 0, ido = 0;
   do {
+    // "double symmetric Arnoldi update"
     dsaupd_c(&ido, bmat, N, which, nev, tol, resid, ncv, V, ldv, iparam, ipntr,
              workd, workl, lworkl, &info);
 
@@ -62,7 +63,8 @@ int main() {
     return 1;
   }
 
-  // If dsaupd has converged, we retrieve the results with dseupd.
+  // If dsaupd has converged, we retrieve the eigenvalues and compute the eigenvectors with dseupd.
+  // "double symmetric eigenvectors update"
   dseupd_c(rvec, howmny, select, d, z, ldz, sigma, bmat, N, which, nev, tol,
            resid, ncv, V, ldv, iparam, ipntr, workd, workl, lworkl, &info);
   if (info < 0) {
@@ -73,12 +75,16 @@ int main() {
   int i;
   for (i = 0; i < nev; ++i) {
     double val = d[i];
-    double ref = (N-(nev-1)+i);
+    double ref = i+1;
     double eps = fabs(val - ref);
     printf("%f - %f = %f\n", val, ref, eps);
 
     /*eigen value order: smallest -> biggest*/
-    if (eps > 1.e-05) return 1;
+    if (eps > 1.e-05) 
+      {
+      printf("Eigenvalue %d does not match: %f vs %f\n", i, val, ref);
+      return 1;
+      }
   }
 
   printf("Done\n");
