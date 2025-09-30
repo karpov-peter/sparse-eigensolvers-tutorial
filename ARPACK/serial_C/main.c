@@ -6,7 +6,7 @@
 
 #include "arpack.h"
 
-/* test program to solve for the 9 largest eigenvalues of
+/* test program to solve for the 9 smallest eigenvalues of
  * A*x = lambda*x where A is the diagonal matrix
  * with entries 1000, 999, ... , 2, 1 on the diagonal.
  * */
@@ -28,7 +28,7 @@ int main() {
   const int rvec   = 1;      // need eigenvectors
 
   const double tol = 1e-6; // small tol => more stable checks after EV computation.
-  const double sigma = 0;  // not referenced in this mode
+  const double sigma = 0;      // not referenced in this mode
   
   double resid[N];
   double V[ldv * ncv];
