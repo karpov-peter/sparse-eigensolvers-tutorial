@@ -1,4 +1,5 @@
-// Example is based on https://github.com/opencollab/arpack-ng/blob/master/TESTS/icb_arpack_c.c
+// Example is based on: 
+// https://github.com/opencollab/arpack-ng/blob/master/TESTS/icb_arpack_c.c
 
 #include <math.h>
 #include <stdio.h>
