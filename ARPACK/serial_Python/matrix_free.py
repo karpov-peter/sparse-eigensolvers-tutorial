@@ -3,8 +3,8 @@ from scipy.sparse.linalg import LinearOperator, eigsh
 
 # Problem parameters
 N    = 1000
-k    = nev          # number of eigenpairs
-ncv  = 2*k + 1      # Krylov subspace size
+nev  = 9          # number of eigenpairs
+ncv  = 2*nev + 1      # Krylov subspace size
 tol  = 1e-6
 maxiter = 10*N
 
@@ -18,11 +18,11 @@ A = LinearOperator(shape=(N, N), matvec=dMatVec, dtype=np.float64)
 
 # Compute k smallest algebraic eigenpairs
 # (since A is symmetric/Hermitian, use eigsh)
-vals, vecs = eigsh(A, k=k, which='SA', ncv=ncv, tol=tol, maxiter=maxiter, return_eigenvectors=True)
+vals, vecs = eigsh(A, k=nev, which='SA', ncv=ncv, tol=tol, maxiter=maxiter, return_eigenvectors=True)
 
 # Check against exact eigenvalues 1..k
 ok = True
-for i in range(k):
+for i in range(nev):
     val = vals[i]
     ref = float(i+1)
     eps = abs(val - ref)
