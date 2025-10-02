@@ -21,22 +21,22 @@
  * with entries 1000, 999, ... , 2, 1 on the diagonal.
  * */
 
-void dMatVec(int start, int N, const double* x, double* y) {
-  int i;
-  for (i = 0; i < N; ++i) y[i] = ((double)(start + i + 1)) * x[i];
+void diagonalMatVec(int start, int N_local, const double* x, double* y) {
+  int i_loc;
+  for (i_loc = 0; i_loc < N_local; ++i_loc) y[i_loc] = ((double)(start + i_loc + 1)) * x[i_loc];
 };
 
 
 int main() {
   MPI_Init(NULL, NULL);
 
-    const int N      = 1000;
+  const int N      = 1000;
   const int nev    = 9;
   const int ncv    = 2 * nev + 1;
   const int ldv    = N;
   const int ldz    = N;
   const int lworkl = ncv * (ncv + 8);
-  const int rvec   = 1;        // need eigenvectors
+  const int rvec   = 1;      // need eigenvectors
 
   const double tol   = 1e-6; // small tol => more stable checks after EV computation.
   const double sigma = 0;    // not referenced in this mode
@@ -70,7 +70,7 @@ int main() {
   if (rank < N % nprocs) // spread the remaining on each process
     N_local = N_local + 1;
   
-  int start = rank*(N / nprocs) + ((rank < N%nprocs) ? rank : N%nprocs);
+  int start = rank*(N / nprocs) + ((rank < N%nprocs) ? rank : N%nprocs); // if N%nprocs==0: start=rank*(N/nprocs) + 0
   printf("rank: %d, start: %d, size: %d\n", rank, start, N_local);
   
   //////////////////////////////////////////////////////////
@@ -79,7 +79,7 @@ int main() {
     pdsaupd_c(MPI_COMM_WORLD_fortran, &ido, bmat, N_local, which, nev, tol, resid, ncv, V, ldv, iparam, ipntr, 
               workd, workl, lworkl, &info);
 
-    dMatVec(start, N_local, &(workd[ipntr[0] - 1]), &(workd[ipntr[1] - 1]));
+    diagonalMatVec(start, N_local, &(workd[ipntr[0] - 1]), &(workd[ipntr[1] - 1]));
   } while (ido == 1 || ido == -1);
 
   // check info and number of ev found by arpack.

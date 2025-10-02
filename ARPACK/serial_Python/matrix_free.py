@@ -3,8 +3,8 @@ from scipy.sparse.linalg import LinearOperator, eigsh
 
 # Problem parameters
 N    = 1000
-k    = 9            # number of eigenpairs
-ncv  = 2*k + 1      # Arnoldi subspace size
+k    = nev          # number of eigenpairs
+ncv  = 2*k + 1      # Krylov subspace size
 tol  = 1e-6
 maxiter = 10*N
 
@@ -12,7 +12,7 @@ maxiter = 10*N
 def dMatVec(x):
     # x is shape (N,)
     i = np.arange(1, N+1, dtype=np.float64)  # 1..N
-    return i * x
+    return i * x # elementwise multiplication
 
 A = LinearOperator(shape=(N, N), matvec=dMatVec, dtype=np.float64)
 

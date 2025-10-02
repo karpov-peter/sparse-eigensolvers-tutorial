@@ -1,4 +1,4 @@
-program arpack_diag_sa
+program arpack_diag
   implicit none
 
   ! Problem sizes / parameters
@@ -35,7 +35,7 @@ program arpack_diag_sa
   tol    = 1.0d-6
   sigma  = 0.0d0
   bmat   = 'I'          ! standard eigenproblem
-  which  = 'SA'         ! smallest algebraic
+  which  = 'LA'         ! smallest algebraic
   howmny = 'A'          ! compute all requested Ritz vectors
   rvec   = .true.       ! return eigenvectors
 
@@ -78,7 +78,7 @@ program arpack_diag_sa
   ! Validate results against exact eigenvalues 1..nev (ascending)
   do i = 1, nev
     val = D(i)
-    ref = dble(i)
+    ref = dble(N-nev+i)
     eps = abs(val - ref)
     write(*,'(f12.6," - ",f12.6," = ",f12.6)') val, ref, eps
     if (eps > 1.0d-5) then

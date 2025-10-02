@@ -62,7 +62,7 @@ int main() {
   iparam[3] = 1;      // NB, only 1 allowed
   iparam[6] = 1;      // mode
 
-  arpack::which const ritz_option = arpack::which::smallest_algebraic;
+  arpack::which const ritz_option = arpack::which::largest_algebraic;
 
   int info = 0, ido = 0;
   do {
@@ -90,7 +90,7 @@ int main() {
 
   for (int i = 0; i < nev; ++i) {
     double val = d[i];
-    double ref = i+1;
+    double ref = (N-(nev-1)+i);
     double eps = std::fabs(val - ref);
     std::cout << val << " - " << ref << " = " << eps << std::endl;
 

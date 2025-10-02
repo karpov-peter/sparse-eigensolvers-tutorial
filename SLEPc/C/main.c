@@ -22,7 +22,7 @@ int main(int argc,char **argv)
   EPS            eps;         /* eigenproblem solver context */
   EPSType        type;
   PetscReal      error,tol,re,im;
-  PetscScalar    kr,ki;
+  PetscScalar    kr,ki; // real and imaginary parts of eigenvalues (e.g. for non-symmetric problems)
   Vec            xr,xi;
   PetscInt       n=30,i,Istart,Iend,nev,maxit,its,nconv;
   PetscErrorCode ierr;
@@ -33,7 +33,7 @@ int main(int argc,char **argv)
   ierr = PetscPrintf(PETSC_COMM_WORLD,"\n1-D Laplacian Eigenproblem, n=%D\n\n",n);CHKERRQ(ierr);
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-     Compute the operator matrix that defines the eigensystem, Ax=kx
+     Compute the matrix that defines the eigensystem, Ax=kx
      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   ierr = MatCreate(PETSC_COMM_WORLD,&A); CHKERRQ(ierr);
@@ -44,12 +44,15 @@ int main(int argc,char **argv)
   ierr = MatGetOwnershipRange(A,&Istart,&Iend);CHKERRQ(ierr);
 for (i=Istart;i<Iend;i++) 
     {
-    if (i>0) { ierr = MatSetValue(A,i,i-1,-1.0,INSERT_VALUES);CHKERRQ(ierr); }
-    if (i<n-1) { ierr = MatSetValue(A,i,i+1,-1.0,INSERT_VALUES);CHKERRQ(ierr); }
+    // COO format: (row, column, value). zero-based indexing both in C and Fortran!
     ierr = MatSetValue(A,i,i,2.0,INSERT_VALUES);CHKERRQ(ierr);
+    if (i>0)   { ierr = MatSetValue(A,i,i-1,-1.0,INSERT_VALUES);CHKERRQ(ierr); }
+    if (i<n-1) { ierr = MatSetValue(A,i,i+1,-1.0,INSERT_VALUES);CHKERRQ(ierr); }
     }
-    
+
+  // Assemble matrix in CSR format (default in PETSc/SLEPc)
   ierr = MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
+  //... we can do some calculations here while MPI communication is happening
   ierr = MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
 
   ierr = MatCreateVecs(A,NULL,&xr);CHKERRQ(ierr);
